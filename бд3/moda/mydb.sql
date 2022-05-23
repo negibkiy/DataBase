@@ -1,0 +1,169 @@
+create database my_db;
+
+use my_db;
+
+create table users(
+	idusers int not null auto_increment,
+    user_fio varchar (100) not null,
+    user_phone_number bigint (15) not null,
+    
+    primary key (idusers)
+);
+create table tickets(
+	idtickets int not null auto_increment,
+    ticket_price int not null,
+    ticket_status tinyint not null,
+	ticket_number bigint not null,
+    idusers int not null,
+    idsessions int not null,
+    
+    primary key (idtickets),
+	foreign key (idusers) references users (idusers),
+    foreign key (idsessions) references sessions (idsessions)
+);
+create table sessions(
+	idsessions	int not null auto_increment,
+	start_time_and_date datetime not null,
+    idfilms int not null,
+    idcinemas int not null,
+    idhalls int not null,
+    
+    primary key (idsessions),
+	foreign key (idfilms) references films (idfilms),
+    foreign key (idcinemas) references cinemas (idcinemas),
+    foreign key (idhalls) references halls (idhalls)
+);
+create table halls(
+	idhalls int not null auto_increment,
+	hall_name varchar(45) not null,
+    hall_capacity int not null,
+    
+	primary key (idhalls)
+);
+create table seats(
+	idseats int not null auto_increment,
+	`row_number` int not null,
+    seat_number int not null,
+    seat_ratio float not null,
+    idtickets int not null,
+    
+	primary key (idseats),
+	foreign key (idtickets) references tickets (idtickets)
+);
+create table cinemas(
+	idcinemas int not null auto_increment, 
+	cinema_email varchar(45) not null,
+	cinema_address varchar(100) not null, 
+	cinema_name varchar(45) not null, 
+	cinema_phone bigint (15) not null, 
+	cinema_city varchar(45) not null,
+    
+    primary key (idcinemas)
+);
+create table films(
+	idfilms int not null auto_increment, 
+	film_name varchar(45) not null,
+	film_duration int not null, 
+	country_of_publication varchar(45) not null,
+    
+    primary key (idfilms)
+);
+create table genres(
+	idgenres int not null auto_increment, 
+	name_genre varchar(45) not null,
+	
+    primary key (idgenres)
+);
+
+create table participations(
+	idparticipations int not null auto_increment, 
+	idactors int not null, 
+	idcharacters int not null, 
+	idfilms int not null,
+    
+    primary key (idparticipations),
+	foreign key (idactors) references actors (idactors),
+    foreign key (idcharacters) references characters (idcharacters),
+    foreign key (idfilms) references films (idfilms)
+);
+create table filmcompanies(
+	idfilmcompanies int not null auto_increment, 
+	film_company_name varchar(45) not null, 
+	year_of_formation int not null, 
+	film_company_locate varchar(45) not null,
+    
+    primary key (idfilmcompanies)
+);
+create table characters(
+	idcharacters int not null auto_increment, 
+	character_name varchar(45) not null, 
+	character_role tinyint not null, 
+	character_amplua varchar(100) not null,
+    
+    primary key (idcharacters)
+);
+create table actors(
+	idactors int not null auto_increment, 
+	actor_fio varchar(45) not null,
+	actor_age int not null, 
+	actor_birth_place varchar(45) not null,
+    
+    primary key (idactors)
+);
+
+
+create table hall_to_seat(
+	idhalls int not null,
+	idseats int not null,
+    
+    primary key (idhalls, idseats),
+    foreign key (idhalls) references halls (idhalls),
+    foreign key (idseats) references seats (idseats)
+);
+create table film_to_genre(
+	idgenres int not null,
+	idfilms int not null,
+    
+    primary key (idgenres, idfilms),
+    foreign key (idgenres) references genres (idgenres),
+    foreign key (idfilms) references films (idfilms)
+);
+create table film_to_company(
+	idfilms int not null,
+	idfilmcompanies int not null,
+    
+    primary key (idfilms, idfilmcompanies),
+    foreign key (idfilms) references films (idfilms),
+    foreign key (idfilmcompanies) references filmcompanies (idfilmcompanies)
+);
+
+
+
+alter table halls
+	add column idcinemas int not null;
+
+alter table halls
+	add foreign key (idcinemas) references cinemas (idcinemas);
+    
+alter table sessions
+	drop foreign key sessions_ibfk_2;
+    
+alter table sessions    
+    drop column idcinemas;
+    
+    
+INSERT INTO `actors` VALUES (1,'Галь Гадот',36,'Израиль'),(2,'Том Холланд',25,'Великобритания'),(3,'Спайк Джонз',52,'США'),(4,'Крис Пайн',41,'США'),(5,'Мэтт Дэймон',51,'США'),(6,'Гэри Олдмен',64,'Великобритания'),(7,'Леонардо ДиКаприо',47,'США'),(8,'Роберт Паттинсон',35,'Великобритания'),(9,'Идрис Эльба',49,'Великобритания'),(10,'Даймонд Уайт',23,'США');
+INSERT INTO `characters` VALUES (1,'Линнет Риджеуэй Дойл',1,'молодая миллионерша, жертва убийства'),(2,'Нейтан Дрейк',1,'молодой охотник за сокровищами'),(3,'кот Джерри',0,'личный помощник главного злодея'),(4,'Джеймс Харпер',1,'вынужденно уволенный из спецназа США'),(5,'Жорж Лонеган',1,'американец, имеющий особую связь с загробной жизнью'),(6,'Герман Дж. Манкевич',1,'сценарист фильма «Гражданин Кейн»'),(7,'Эндрю Лэддис',1,'ветеран Второй Мировой войны'),(8,'Эфраим Уинслоу',1,'бывший лесоруб, смотрителя маяка'),(9,'Роланд Дискейн',1,'стрелок'),(10,'Лунеллы Лафайетт',1,'одаренная молодая девушка, которая случайно приносит дьявольского динозавра');
+INSERT INTO `cinemas` VALUES (1,'hopoussoiprepru-4486@yopmail.com','ул. Землячки, 110б, ТРК «Мармелад», 2 этаж','Mori Cinema',84236532721,'Волгоград'),(2,'grunneubraurauwou-4398@yopmail.com','просп. Героев Сталинграда, 68','Гиппопо',88202742647,'Волгоград'),(3,'quafuvameddoi-9702@yopmail.com','ул. Рабоче-Крестьянская, 9б, ТЦ «Ворошиловский»','Пять звёзд',83513090786,'Волгоград'),(4,'tennibruvanei-5143@yopmail.com','просп. им. Ленина, 54б, ТРК «Европа Сити Молл»','Синема Парк',84932773835,'Волгоград'),(5,'xatawagura-5788@yopmail.com','Рабоче-Крестьянская ул., 10','Киномакс',83911532332,'Волгоград');
+INSERT INTO `filmcompanies` VALUES (1,'20th Century Studios',1935,'США: Лос-Анджелес, Калифорния'),(2,'Columbia Pictures',1924,'США: Калвер-Сити, Калифорния'),(3,'Universal Pictures',1912,'Юниверсал-Сити, США'),(4,'Thunder Road Films',2000,'Санта-Моника, Калифорния'),(5,'Warner Bros. Pictures',1923,'США: Бербанк, Калифорния'),(6,'Netflix',1997,'США: Лос-Гатос Калифорния'),(7,'Paramount Pictures',1912,'США: Лос-Анджелес, Калифорния'),(8,'Regency Enterprises',1982,'США: Лос-Анджелес. Калифорния'),(9,'Imagine Entertainment',1985,'США: Лос-Анджелес. Калифорния'),(10,'Marvel Animation',2008,'США: Глендейл, Калифорния');
+INSERT INTO `films` VALUES (1,'Смерть на Ниле',127,'Великобритания, США'),(2,'Анчартед: На картах не значится',115,'США, Испания'),(3,'Зверопой 2',110,'Франция, Япония, США'),(4,'Наёмник',103,'США'),(5,'Потустороннее',96,'Китай'),(6,'Манк',113,'США'),(7,'Остров проклятых',138,'США'),(8,'Маяк',109,'США, Канада'),(9,'Тёмная башня',95,'США'),(10,'Лунная девочка и Дьявол динозавр',115,'США');
+INSERT INTO `film_to_company` VALUES (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9),(10,10);
+INSERT INTO `film_to_genre` VALUES (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9),(10,10);
+INSERT INTO `genres` VALUES (1,'безумие'),(2,'вампиры'),(3,'военное'),(4,'детектив'),(5,'детское'),(6,'драма'),(7,'комедия'),(8,'космос'),(9,'повседневность'),(10,'приключения');
+INSERT INTO `halls` VALUES (1,'3 зал',100,1),(2,'2 зал',125,1),(3,'5 зал',150,2),(4,'3 зал',100,3),(5,'1 зал',175,4),(6,'2 зал',200,5),(7,'4 зал',210,2),(8,'3 зал',90,2),(9,'2 зал',85,1),(10,'1 зал',120,3);
+INSERT INTO `hall_to_seat` VALUES (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9),(10,10);
+INSERT INTO `participations` VALUES (1,1,1,1),(2,2,2,2),(3,3,3,3),(4,4,4,4),(5,5,5,5),(6,6,6,6),(7,7,7,7),(8,8,8,8),(9,9,9,9),(10,10,10,10);
+INSERT INTO `seats` VALUES (1,1,12,1.5,1),(2,6,14,2,2),(3,5,3,1.35,3),(4,4,7,2,4),(5,2,8,2.1,5),(6,1,11,1.5,6),(7,7,16,1.65,7),(8,12,17,1.7,8),(9,4,1,2.1,9),(10,11,3,2.5,10);
+INSERT INTO `sessions` VALUES (1,'2022-07-17 16:02:00',1,1),(2,'2022-02-18 13:20:00',2,2),(3,'2022-11-26 01:41:00',3,3),(4,'2022-07-08 08:55:00',4,4),(5,'2022-01-01 23:58:00',5,5),(6,'2022-12-14 12:27:00',6,1),(7,'2022-07-23 09:23:00',7,2),(8,'2022-12-06 19:47:00',8,3),(9,'2022-07-20 16:12:00',9,4),(10,'2022-07-27 13:43:00',10,5);
+INSERT INTO `tickets` VALUES (1,200,1,4561,1,1),(2,175,0,15613,2,2),(3,200,0,156,3,3),(4,155,0,896,4,4),(5,165,1,894,5,5),(6,300,0,132,6,6),(7,190,1,8798,7,7),(8,455,0,215,8,8),(9,210,1,8798,9,9),(10,150,0,329,10,10);
+INSERT INTO `users` VALUES (1,'Кулагин М. Д.',89555993628),(2,'Смирнова А. Д.',89424211370),(3,'Киселев П. Г.',89701628772),(4,'Никитина А. Н.',89317051496),(5,'Агеев Я. М.',89148447932),(6,'Ермолаева И. Д.',89644275174),(7,'Котов Е. А.',89574011177),(8,'Николаева А. А.',89397891277),(9,'Иванов Н. Я.',89726902921),(10,'Сергеева Д. Д.',89628825475);
