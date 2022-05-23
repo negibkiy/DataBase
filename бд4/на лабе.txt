@@ -1,0 +1,61 @@
+-- WITH (2шт)
+
+with cte_hall_capacity as
+(
+ select idhalls, hall_name, hall_capacity from halls where hall_capacity < 120
+)
+select * from cte_hall_capacity where idhalls in(1, 2, 3);
+
+with cte_film_name as
+(
+ select idfilms, film_name, film_duration from films where lower(film_name) like ("анч%")
+)
+select * from cte_film_name where idfilms >0;
+
+
+-- UNION, EXCEPT, INTERSECT (3шт)
+select price as cost
+	from test
+union select ticket_price 
+    from tickets
+    order by cost;
+
+select f.film_name, f.film_duration, s.start_time_and_date
+	from films as f
+    left join sessions as s on f.idfilms = s.idfilms
+    order by film_name
+except
+	select f.film_name, f.film_duration, s.start_time_and_date
+	from films as f
+    right join sessions as s on f.idfilms = s.idfilms;
+
+select f.film_name, f.film_duration, s.start_time_and_date
+	from films as f
+    left join sessions as s on f.idfilms = s.idfilms
+    order by film_name
+intersect
+	select f.film_name, f.film_duration, s.start_time_and_date
+	from films as f
+    right join sessions as s on f.idfilms = s.idfilms;
+
+
+
+
+
+
+
+
+
+Оперативные требования :
+Вывести всю информацию о кинотеатрах в городе
+Вывести всю информацию о конкретном клиенте
+Вывести информацию о конкретной кинокомпании
+Вывести всю информацию о фильме
+Вывести информацию об актере в данном фильме
+Вывести информацию данного персонажа в фильме
+Аналитические требования :
+Вывести самый минимальный по вместительности зал с его именем
+Вывести стоимость билета (при условии места в зале)
+Вывести количество фильмов выпущенной кинокомпании
+Вывести количество среднюю продолжительности всех фильмов доступных в кинотеатре
+Вывести самый продолжительный фильм
